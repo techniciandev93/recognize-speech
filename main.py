@@ -20,7 +20,7 @@ def detect_intent_texts(project_id, user_id, text, language_code):
     query_input = dialogflow.QueryInput(text=text_input)
 
     response = session_client.detect_intent(
-        request={"session": session, "query_input": query_input}
+        request={'session': session, 'query_input': query_input}
     )
     return response.query_result.fulfillment_text
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     updater = Updater(env.str('TELEGRAM_BOT_TOKEN'))
     dispatcher = updater.dispatcher
 
-    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler('start', start))
 
     echo_with_args = partial(echo, project_id=credentials['quota_project_id'], language_code=language_code)
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo_with_args))

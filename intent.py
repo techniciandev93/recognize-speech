@@ -22,10 +22,8 @@ def create_intent(project_id, display_name, training_phrases_parts, answer_text)
     )
 
     response = intents_client.create_intent(
-        request={"parent": parent, "intent": intent}
+        request={'parent': parent, 'intent': intent}
     )
-
-    print("Intent created: {}".format(response))
 
 
 if __name__ == '__main__':

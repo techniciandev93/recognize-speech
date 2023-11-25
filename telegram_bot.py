@@ -20,7 +20,8 @@ def start(update, context):
 
 def run_dialog_flow_telegram(update, context, project_id, language_code):
     message = detect_intent_texts(project_id, update.message.from_user.id, update.message.text, language_code)
-    update.message.reply_text(message)
+    if message:
+        update.message.reply_text(message)
 
 
 if __name__ == '__main__':

@@ -10,11 +10,12 @@ from intent import detect_intent_texts
 
 def run_dialog_flow_vk(event, vk_api, project_id, language_code):
     message = detect_intent_texts(project_id, event.user_id, event.text, language_code)
-    vk_api.messages.send(
-        user_id=event.user_id,
-        message=message,
-        random_id=random.randint(1, 1000)
-    )
+    if message:
+        vk_api.messages.send(
+            user_id=event.user_id,
+            message=message,
+            random_id=random.randint(1, 1000)
+        )
 
 
 if __name__ == '__main__':

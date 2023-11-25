@@ -41,7 +41,7 @@ if __name__ == '__main__':
     language_code = 'ru_RU'
     google_application_credentials_path = env.str('GOOGLE_APPLICATION_CREDENTIALS')
 
-    with open(google_application_credentials_path, 'r') as file:
+    with open(google_application_credentials_path, 'r', encoding='utf8') as file:
         credentials = json.load(file)
 
     updater = Updater(env.str('TELEGRAM_BOT_TOKEN'))

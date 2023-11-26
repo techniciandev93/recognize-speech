@@ -3,8 +3,12 @@
 Боты для Телеграм и Вконтакте которые умеет отвечать на типичные вопросы при помощи [DialogFlow](https://cloud.google.com/dialogflow/docs)
 
 <img src="./media/tg.gif" width="150" height="350"/>
+
+[Бот Telegram](https://t.me/dialog2023_bot)
+
 <img src="./media/vk2.gif" width="150" height="350"/>
 
+[Бот VK](https://vk.com/club222789534)
 ## Как установить
 
 Python 3.8 должен быть уже установлен.

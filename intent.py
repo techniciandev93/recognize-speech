@@ -1,7 +1,15 @@
 import json
+import logging
 
 from environs import Env
 from google.cloud import dialogflow
+
+
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+)
+
+logger = logging.getLogger('Logger intent')
 
 
 def create_intent(project_id, display_name, training_phrases_parts, answer_text):
@@ -21,7 +29,7 @@ def create_intent(project_id, display_name, training_phrases_parts, answer_text)
         display_name=display_name, training_phrases=training_phrases, messages=[message]
     )
 
-    response = intents_client.create_intent(
+    intents_client.create_intent(
         request={'parent': parent, 'intent': intent}
     )
 
@@ -41,23 +49,28 @@ def detect_intent_texts(project_id, user_id, text, language_code):
 
 
 if __name__ == '__main__':
-    env = Env()
-    env.read_env()
+    try:
+        env = Env()
+        env.read_env()
 
-    questions_path = 'questions.json'
+        questions_path = 'questions.json'
 
-    google_application_credentials_path = env.str('GOOGLE_APPLICATION_CREDENTIALS')
+        google_application_credentials_path = env.str('GOOGLE_APPLICATION_CREDENTIALS')
 
-    with open(google_application_credentials_path, 'r', encoding='utf8') as file:
-        credentials = json.load(file)
+        with open(google_application_credentials_path, 'r', encoding='utf8') as file:
+            credentials = json.load(file)
 
-    with open(questions_path, 'r', encoding='utf8') as file:
-        questions = json.load(file)
+        with open(questions_path, 'r', encoding='utf8') as file:
+            questions = json.load(file)
 
-    for intent_name in questions:
-        create_intent(
-            credentials['quota_project_id'],
-            intent_name,
-            questions[intent_name]['questions'],
-            questions[intent_name]['answer']
-        )
+        for intent_name in questions:
+            create_intent(
+                credentials['quota_project_id'],
+                intent_name,
+                questions[intent_name]['questions'],
+                questions[intent_name]['answer']
+            )
+
+        logger.setLevel(logging.ERROR)
+    except Exception as error:
+        logger.exception(error)

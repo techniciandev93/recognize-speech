@@ -10,10 +10,6 @@ from intent import detect_intent_texts
 from telegram_logging_handler import TelegramLogsHandler
 
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
-
 logger = logging.getLogger('Logger telegram bot')
 
 
@@ -22,9 +18,8 @@ def start(update, context):
 
 
 def send_dialog_flow_tg(update, context, project_id, language_code):
-    message = detect_intent_texts(project_id, update.message.from_user.id, update.message.text, language_code)
-    if message:
-        update.message.reply_text(message)
+    dialogflow_response = detect_intent_texts(project_id, update.message.from_user.id, update.message.text, language_code)
+    update.message.reply_text(dialogflow_response.fulfillment_text)
 
 
 if __name__ == '__main__':
@@ -52,6 +47,10 @@ if __name__ == '__main__':
                                         project_id=credentials['quota_project_id'],
                                         language_code=language_code)
         dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, dialog_flow_with_args))
+
+        logging.basicConfig(
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+        )
 
         logger.setLevel(logging.INFO)
         logger.addHandler(TelegramLogsHandler(notification_bot, telegram_chat_id))

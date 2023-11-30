@@ -10,19 +10,16 @@ from vk_api.longpoll import VkLongPoll, VkEventType
 from intent import detect_intent_texts
 from telegram_logging_handler import TelegramLogsHandler
 
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
 
 logger = logging.getLogger('Logger vk bot')
 
 
 def send_dialog_flow_vk(event, vk_api, project_id, language_code):
-    message = detect_intent_texts(project_id, event.user_id, event.text, language_code)
-    if message:
+    dialogflow_response = detect_intent_texts(project_id, event.user_id, event.text, language_code)
+    if not dialogflow_response.intent.is_fallback:
         vk_api.messages.send(
             user_id=event.user_id,
-            message=message,
+            message=dialogflow_response.fulfillment_text,
             random_id=random.randint(1, 1000)
         )
 
@@ -46,6 +43,10 @@ if __name__ == '__main__':
         longpoll = VkLongPoll(vk_session)
 
         notification_bot = telegram.Bot(token=telegram_notification_token)
+
+        logging.basicConfig(
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+        )
 
         logger.setLevel(logging.INFO)
         logger.addHandler(TelegramLogsHandler(notification_bot, telegram_chat_id))

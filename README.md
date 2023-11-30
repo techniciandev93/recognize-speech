@@ -37,9 +37,9 @@ python vk_bot.py
 ```
 Запустите скрипт, чтобы обучить агента
 ```
-python intent.py
+python intent.py --path /путь к questions.json
 ```
-Для обучения используется файл questions.json в корне проекта
+По умолчанию без аргумента будет взят файл questions.json из корня проекта
 
 ## Примечания
 

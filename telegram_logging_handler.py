@@ -1,7 +1,6 @@
 import logging
 
-
-telegram_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+TELEGRAM_FORMATTER = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 
 class TelegramLogsHandler(logging.Handler):
@@ -12,5 +11,5 @@ class TelegramLogsHandler(logging.Handler):
         self.tg_bot = tg_bot
 
     def emit(self, record):
-        log_entry = telegram_formatter.format(record)
+        log_entry = TELEGRAM_FORMATTER.format(record)
         self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)

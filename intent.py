@@ -1,13 +1,10 @@
+import argparse
 import json
 import logging
 
 from environs import Env
 from google.cloud import dialogflow
 
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
 
 logger = logging.getLogger('Logger intent')
 
@@ -43,9 +40,7 @@ def detect_intent_texts(project_id, user_id, text, language_code):
     response = session_client.detect_intent(
         request={'session': session, 'query_input': query_input}
     )
-    if response.query_result.intent.is_fallback:
-        return None
-    return response.query_result.fulfillment_text
+    return response.query_result
 
 
 if __name__ == '__main__':
@@ -53,23 +48,32 @@ if __name__ == '__main__':
         env = Env()
         env.read_env()
 
-        questions_path = 'questions.json'
+        parser = argparse.ArgumentParser(description="Этот скрипт предназначен для обучения агента "
+                                                     "по умолчанию без аргументов будет браться файл questions.json "
+                                                     "из корня проекта: python intent.py")
+        parser.add_argument('--path', type=str, help="Укажите путь к json файлу",
+                            nargs='?', default='questions.json')
+        args = parser.parse_args()
 
         google_application_credentials_path = env.str('GOOGLE_APPLICATION_CREDENTIALS')
 
         with open(google_application_credentials_path, 'r', encoding='utf8') as file:
             credentials = json.load(file)
 
-        with open(questions_path, 'r', encoding='utf8') as file:
+        with open(args.path, 'r', encoding='utf8') as file:
             questions = json.load(file)
 
-        for intent_name in questions:
+        for intent_name, intent in questions.items():
             create_intent(
                 credentials['quota_project_id'],
                 intent_name,
-                questions[intent_name]['questions'],
-                questions[intent_name]['answer']
+                intent['questions'],
+                intent['answer']
             )
+
+        logging.basicConfig(
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+        )
 
         logger.setLevel(logging.ERROR)
     except Exception as error:
